@@ -160,7 +160,7 @@ paths:
                     unit:
                       type: string
                       enum:
-                        - metersPerSecond
+                        - knots
                 course:
                   title: Course
                   description: |
