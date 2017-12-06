@@ -98,6 +98,8 @@ paths:
         - Ingestion
       consumes:
         - application/json
+      security:
+        - apiKey: []
       parameters:
         - name: data
           in: body
