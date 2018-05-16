@@ -35,6 +35,7 @@ module.exports = {
             res.sendStatus(401);
           } else {
             req.authorization = client;
+            req.authorization.key = client[datastore.KEY].path;
             next();
           }
         });

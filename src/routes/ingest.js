@@ -14,9 +14,10 @@ module.exports = (app) => {
 
     const uploadPath = path.join(
       config.storage.path,
-      req.authorization.code,
+      req.authorization.key[1],
       fileName,
     );
+
 
     log.debug(`Uploading ingestion data to gs://${config.storage.bucket}/${uploadPath}`);
     const upload = bucket
