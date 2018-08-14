@@ -1,7 +1,7 @@
 FROM gcr.io/google_appengine/nodejs
 
 # Use a newer version of nodejs
-RUN install_node 8.9.1
+RUN install_node 8.11.3
 
 # Setup the project directory
 RUN mkdir -p /opt/project
