@@ -1,0 +1,190 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Ingest API
+  description: |
+    Ingest API
+    ## Authorization
+
+    This API requires an API key to use. The key should be included in the `Authorization` header of all requests to the API. Example: `Authorization: Bearer <token>`
+
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    in: header
+    name: authorization
+    description: format -> `Bearer <token>`
+definitions:
+  ValidationError:
+    type: object
+    required:
+      - fields
+      - general
+    properties:
+      fields:
+        type: array
+        items:
+          type: object
+          required:
+            - field
+            - errors
+          properties:
+            field:
+              type: string
+            errors:
+              type: array
+              items:
+                type: object
+                required:
+                  - code
+                  - description
+                properties:
+                  code:
+                    type: string
+                  description:
+                    type: string
+      general:
+        type: array
+        items:
+          type: object
+          required:
+            - code
+            - description
+          properties:
+            code:
+              type: string
+            description:
+              type: string
+  Position:
+    type: object
+    description: Position
+    required:
+      - vesselId
+      - lat
+      - lon
+      - timestamp
+    properties:
+      id:
+        title: Identifier
+        description: |
+          Alphanumeric identifier which uniquely identifies the entity.
+        type: string
+      lat:
+        title: Latitude
+        description: Latitude
+        type: number
+        format: float
+        minimum: -90
+        maximum: 90
+      lon:
+        title: Longitude
+        description: Longitude
+        type: number
+        format: float
+        minimum: -180
+        maximum: 180
+      timestamp:
+        title: Timestamp
+        description: |
+          ISO8601 representation of the date and time this position
+          was detected.
+        type: string
+        format: date-time
+      extra-info:
+        title: Extra Info
+        type: object
+        description: |
+          More info about the vessel
+  PublicKey:
+    type: object
+    description: Public key
+    required:
+      - key
+    properties:
+      key:
+        title: key
+        description: |
+          Content of the key encoded in base64
+        type: string
+      version:
+        title: version
+        description: |
+          Version of the key
+        example: v1
+        type: string
+responses:
+  BadRequest:
+    description: |
+      Bad request. Invalid or wrong parameters were provided.
+    schema:
+      $ref: '#/definitions/ValidationError'
+
+  Unauthorized:
+    description: |
+      Unauthorized, either the api key is invalid or expired.
+
+  NotFound:
+    description: |
+      Not found. Either the dataset does not exist, or the specific entity
+      which was requested does not exist.
+paths:
+  '/ingest/public-key':
+    get:
+      summary: |
+        Get public key for encryptation
+      description: |
+        Get public key for encryptation
+      security:
+        - apiKey: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/PublicKey'
+          description: |
+            Expected response to a successful request.
+        '401':
+          $ref: '#/responses/Unauthorized'
+        '400':
+          $ref: '#/responses/BadRequest'
+  '/ingest/position':
+    post:
+      summary: |
+        Save positions.
+      description: |
+        Create new action
+      security:
+        - apiKey: []
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: encrypted
+          description: This param indicates if the body is encrypted with asymetric encriptation
+          required: false
+          default: false
+          type: boolean
+        - in: query
+          name: version-key
+          description: This param indicates the version of the key used to encrypt the body, if the body is encrypted. If the body is encrypted but this param is not informed, the api uses the last version of the key to decrypt the body
+          required: false
+          default: false
+          type: boolean
+        - in: body
+          name: action
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Position'
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/Position'
+          description: |
+            Expected response to a successful request.
+        '401':
+          $ref: '#/responses/Unauthorized'
+        '400':
+          $ref: '#/responses/BadRequest'
