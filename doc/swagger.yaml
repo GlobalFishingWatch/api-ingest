@@ -180,8 +180,6 @@ paths:
               $ref: '#/definitions/Position'
       responses:
         '200':
-          schema:
-            $ref: '#/definitions/Position'
           description: |
             Expected response to a successful request.
         '401':

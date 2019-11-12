@@ -21,7 +21,7 @@ class UserRouter {
       );
     }
     await IngestService.uploadPositions(positions);
-    ctx.body = positions;
+    ctx.body = '';
   }
 }
 
