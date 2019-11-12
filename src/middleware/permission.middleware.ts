@@ -9,12 +9,13 @@ export function permissionMiddleware(permissions: any[]) {
   return async (ctx: Koa.ParameterizedContext, next: any) => {
     logger.debug('Checking permissions', permissions);
 
-    const userId = ctx.state.user.id;
+    const id = ctx.state.user.id;
+    const type = ctx.state.user.type;
     let has = false;
     for (let i = 0; i < permissions.length; i++) {
       try {
         const permission = permissions[i];
-        const url = `${config.auth.url}/v2/permission/${userId}/has/${permission.action}/${permission.type}/${permission.value}`;
+        const url = `${config.auth.url}/v2/permission/${type}/${id}/has/${permission.action}/${permission.type}/${permission.value}`;
 
         const options = {
           uri: url,
