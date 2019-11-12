@@ -15,7 +15,7 @@ export function permissionMiddleware(permissions: any[]) {
     for (let i = 0; i < permissions.length; i++) {
       try {
         const permission = permissions[i];
-        const url = `${config.auth.url}/v2/permission/${type}/${id}/has/${permission.action}/${permission.type}/${permission.value}`;
+        const url = `${config.auth.url}/v2/permission/${id}/${type}/has/${permission.action}/${permission.type}/${permission.value}`;
 
         const options = {
           uri: url,

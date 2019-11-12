@@ -32,18 +32,14 @@ const router = new Router({
 router.get(
   '/public-key',
   userMiddleware,
-  permissionMiddleware([
-    { action: 'read-all', type: 'entity', value: 'ingest' },
-  ]),
+  permissionMiddleware([{ action: 'read', type: 'entity', value: 'ingest' }]),
   UserRouter.getPublicKey,
 );
 
 router.post(
   '/position',
   userMiddleware,
-  permissionMiddleware([
-    { action: 'create-all', type: 'entity', value: 'position' },
-  ]),
+  permissionMiddleware([{ action: 'create', type: 'entity', value: 'ingest' }]),
   UserRouter.savePosition,
 );
 export default router;
