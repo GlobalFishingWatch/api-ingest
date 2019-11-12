@@ -1,6 +1,4 @@
-# GFW SSO API (Single Sign On)
-
-REST API microservice to manage users and authentication.
+# GFW Ingest API
 
 This is a [nodejs](https://nodejs.org/en/) koa application.
 
@@ -16,23 +14,7 @@ Most of the application settings are configured through environment variables.  
 
 We use a dockerized development environment, so you will need [docker](https://www.docker.com/) on your machine and also [docker-compose](https://docs.docker.com/compose/install/). We also need the [google cloud sdk](https://cloud.google.com/sdk/) installed locally to generate the authorization files that will be mounted on the docker container to authorize access to google cloud services. No other dependencies are required in your machine.
 
-You need to create the private and public keys to sign the tokens:
 
-Generate private key
-
-```
-
-openssl genrsa  -out ./keys/privkey.pem 3072
-
-```
-
-Public key from private key
-
-```
-
-openssl rsa -in ./keys/privkey.pem  -pubout -out ./keys/privkey.pub
-
-```
 
 ### Quick start
 
@@ -45,16 +27,6 @@ openssl rsa -in ./keys/privkey.pem  -pubout -out ./keys/privkey.pub
 This is a standard docker-compose project, so you can start all the necessary connected containers using `docker-compose up`. This will build images as needed and start a docker cluster with the webserver running on your local port 8080, and the debugging port open on your local port 5858.
 
 If you need to run any npm-specific commands, run them inside the cluster with `docker-compose run dev [COMMAND]`.
-
-### Deploy
-
-Use gcloud cli
-
-```
-
-gcloud beta functions deploy vessel-tracks --entry-point=entrypoint --runtime nodejs10 --trigger-http --env-vars-file=./test/env.yaml --memory=512MB --vpc-connector=projects/skytruth-pelagos-production/locations/us-central1/connectors/vpc-connector
-
-```
 
 ## License
 
