@@ -90,7 +90,7 @@ definitions:
           was detected.
         type: string
         format: date-time
-      extra-info:
+      extraInfo:
         title: Extra Info
         type: object
         description: |
