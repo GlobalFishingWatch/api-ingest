@@ -1,0 +1,61 @@
+steps:
+  # Push production image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--target',
+        'development',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        '.',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        'npm',
+        'test',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--target',
+        'build',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        '.',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+      ]
+
+  # Deploy to the appropriate environment
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      [
+        'beta',
+        'run',
+        'deploy',
+        '$_RUN_SERVICE_NAME',
+        '--project',
+        '$_RUN_PROJECT',
+        '--image',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        '--region',
+        '$_RUN_REGION',
+        '--platform',
+        'managed',
+        '--set-env-vars',
+        'PRIVATE_KEY=$_PRIVATE_KEY,PUBLIC_KEY=$_PUBLIC_KEY',
+        '--allow-unauthenticated',
+      ]
+images:
+  - 'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA'
+
+timeout: 900s
