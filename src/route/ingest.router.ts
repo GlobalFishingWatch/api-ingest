@@ -6,6 +6,7 @@ import { userMiddleware } from 'middleware/user.middleware';
 import { permissionMiddleware } from 'middleware/permission.middleware';
 import { NotFoundException } from 'errors/http.error';
 import { config } from 'config/config';
+import { validatePositions } from 'validations/positions.validation';
 
 class UserRouter {
   static async getPublicKey(ctx: Koa.ParameterizedContext) {
@@ -15,13 +16,16 @@ class UserRouter {
   static async savePosition(ctx: Koa.ParameterizedContext) {
     let positions = ctx.request.body;
     if (ctx.query.encrypted && ctx.query.encrypted === 'true') {
+      console.log('Decrypting', positions);
       positions = await IngestService.decryptPositions(
         ctx.request.body,
         ctx.query['version-key'],
       );
+      console.log(positions);
     }
+    await validatePositions(positions);
     await IngestService.uploadPositions(positions);
-    ctx.body = '';
+    ctx.body = null;
   }
 }
 

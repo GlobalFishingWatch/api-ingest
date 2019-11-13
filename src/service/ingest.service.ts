@@ -23,16 +23,20 @@ export class IngestService {
   }
 
   static async decryptPositions(
-    body: string,
+    body: string[],
     versionKey: string = config.lastVersionKey,
   ): Promise<any[]> {
     let privateKey;
     if (config.keys[versionKey]) {
       privateKey = config.keys[versionKey].privateKeyDecode;
     }
-    const buffer = Buffer.from(body, 'base64');
-    const decrypted = crypto.privateDecrypt(privateKey, buffer);
-    return JSON.parse(decrypted.toString('utf8'));
+    const res = body.map(item => {
+      const buffer = Buffer.from(item, 'base64');
+      const decrypted = crypto.privateDecrypt(privateKey, buffer);
+      return JSON.parse(decrypted.toString('utf8'));
+    });
+
+    return res;
   }
 
   static async uploadPositions(positions: any[]): Promise<void> {
