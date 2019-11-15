@@ -15,6 +15,7 @@ class UserRouter {
   }
   static async savePosition(ctx: Koa.ParameterizedContext) {
     let positions = ctx.request.body;
+    const app = ctx.state.user;
     if (ctx.query.encrypted && ctx.query.encrypted === 'true') {
       console.log('Decrypting', positions);
       positions = await IngestService.decryptPositions(
@@ -24,7 +25,7 @@ class UserRouter {
       console.log(positions);
     }
     await validatePositions(positions);
-    await IngestService.uploadPositions(positions);
+    await IngestService.uploadPositions(app.id, positions);
     ctx.body = null;
   }
 }

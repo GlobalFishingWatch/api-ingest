@@ -39,14 +39,20 @@ export class IngestService {
     return res;
   }
 
-  static async uploadPositions(positions: any[]): Promise<void> {
+  static async uploadPositions(appId: number, positions: any[]): Promise<void> {
     logger.debug(`Uploading files to gcs (bucket: ${config.bucket})`);
+
     const storage = new Storage();
     const bucket = storage.bucket(config.upload.bucket);
     for (let i = 0; i < positions.length; i++) {
       const position = positions[i];
+      position.receiveDate = new Date().toISOString();
       const res = await bucket
-        .file(`${config.upload.dir}/${position.id}-${Date.now()}`)
+        .file(
+          `${config.upload.dir}/${appId}/${new Date().toISOString()}-${
+            position.id
+          }.json`,
+        )
         .save(JSON.stringify(position), {
           metadata: {
             contentType: 'application/json',
