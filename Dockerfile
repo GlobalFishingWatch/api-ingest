@@ -23,7 +23,6 @@ COPY tsconfig.json /opt/project/
 COPY src /opt/project/src
 
 RUN npm run build
-RUN ./notexit
 
 ################################################################################
 # Development environment
