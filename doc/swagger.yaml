@@ -13,6 +13,8 @@ servers:
 paths:
   '/ingest/public-key':
     get:
+      tags:
+        - Ingest
       summary: |
         Get public key for encryptation
       description: |
@@ -36,6 +38,8 @@ paths:
                 $ref: '#/components/schemas/ValidationError'
   '/ingest/position':
     post:
+      tags:
+        - Ingest
       summary: |
         Save positions.
       description: |
