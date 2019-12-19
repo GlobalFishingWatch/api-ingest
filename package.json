@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "auth-middleware": "git://github.com/GlobalFishingWatch/auth-middleware.git#develop",
     "@google-cloud/logging-winston": "^3.0.0",
     "@google-cloud/storage": "^4.1.1",
     "@hapi/joi": "^16.1.7",

@@ -2,11 +2,9 @@ import { IngestService } from './../service/ingest.service';
 import { logger } from 'logger';
 import * as Router from 'koa-router';
 import * as Koa from 'koa';
-import { userMiddleware } from 'middleware/user.middleware';
-import { permissionMiddleware } from 'middleware/permission.middleware';
-import { NotFoundException } from 'errors/http.error';
-import { config } from 'config/config';
 import { validatePositions } from 'validations/positions.validation';
+
+const { koa } = require('auth-middleware');
 
 class UserRouter {
   static async getPublicKey(ctx: Koa.ParameterizedContext) {
@@ -36,15 +34,15 @@ const router = new Router({
 
 router.get(
   '/public-key',
-  userMiddleware,
-  permissionMiddleware([{ action: 'read', type: 'entity', value: 'ingest' }]),
+  koa.obtainUser(true),
+  koa.checkPermissions([{ action: 'read', type: 'entity', value: 'ingest' }]),
   UserRouter.getPublicKey,
 );
 
 router.post(
   '/position',
-  userMiddleware,
-  permissionMiddleware([{ action: 'create', type: 'entity', value: 'ingest' }]),
+  koa.obtainUser(true),
+  koa.checkPermissions([{ action: 'create', type: 'entity', value: 'ingest' }]),
   UserRouter.savePosition,
 );
 export default router;

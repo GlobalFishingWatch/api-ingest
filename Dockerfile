@@ -4,7 +4,7 @@
 FROM node:12-alpine AS build
 
 # Setup the project directory
-RUN mkdir -p /opt/project
+RUN apk update && apk add git && mkdir -p /opt/project
 WORKDIR /opt/project
 
 # Setup default command
@@ -21,7 +21,7 @@ RUN npm --unsafe-perm install --only production
 COPY tslint.json /opt/project/
 COPY tsconfig.json /opt/project/
 COPY src /opt/project/src
-
+RUN npm update auth-middleware
 RUN npm run build
 
 ################################################################################

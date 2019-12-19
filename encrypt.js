@@ -26,6 +26,9 @@ const positions = {
   lon: -31.9999666667,
   id: 'fb241dde-3aa0-4301-b190-05519428cf0b',
   timestamp: new Date().toISOString(),
+  extraInfo: {
+    test: 1,
+  },
 };
 const msg = encryptStringWithRsaPublicKey(positions);
 console.log(msg);

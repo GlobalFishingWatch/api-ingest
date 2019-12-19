@@ -27,7 +27,7 @@ export const config = sanitizeEnvironment(environments, {
   port: entry({
     key: 'PORT',
     doc: 'Listening port',
-    defaults: { all: 3000 },
+    defaults: { all: 3500 },
     required: true,
   }),
   lastVersionKey: entry({
@@ -36,20 +36,6 @@ export const config = sanitizeEnvironment(environments, {
     defaults: { all: 'v1' },
     required: true,
   }),
-  auth: {
-    url: entry({
-      key: 'AUTH_URL',
-      doc: 'Internal token',
-      defaults: { dev: 'http://10.0.1.104:5001' },
-      required: true,
-    }),
-    token: entry({
-      key: 'AUTH_TOKEN',
-      doc: 'Internal token',
-      defaults: {},
-      required: true,
-    }),
-  },
   upload: {
     bucket: entry({
       key: 'UPLOAD_BUCKET',
