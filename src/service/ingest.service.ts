@@ -40,7 +40,7 @@ export class IngestService {
   }
 
   static async uploadPositions(appId: number, positions: any[]): Promise<void> {
-    logger.debug(`Uploading files to gcs (bucket: ${config.bucket})`);
+    logger.debug(`Uploading files to gcs (bucket: ${config.upload.bucket})`);
 
     const storage = new Storage();
     const bucket = storage.bucket(config.upload.bucket);
