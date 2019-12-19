@@ -20,12 +20,6 @@ app.use(Body());
 app.use(Helmet());
 app.use(errorMiddleware);
 
-app.keys = [config.sessionSecret];
-app.use(async (ctx, next) => {
-  console.log(ctx.request.headers);
-  await next();
-});
-
 app.use(ingestRouter.routes()).use(ingestRouter.allowedMethods());
 
 app.listen(config.port, () => {
