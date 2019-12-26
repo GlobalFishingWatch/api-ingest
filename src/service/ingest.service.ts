@@ -4,11 +4,11 @@ import { logger } from 'logger';
 import { Storage } from '@google-cloud/storage';
 
 Object.keys(config.keys).forEach(version => {
-  config.keys[version].publicKeyDecode = new Buffer(
+  config.keys[version].publicKeyDecode = Buffer.from(
     config.keys[version].publicKey,
     'base64',
   ).toString('ascii');
-  config.keys[version].privateKeyDecode = new Buffer(
+  config.keys[version].privateKeyDecode = Buffer.from(
     config.keys[version].privateKey,
     'base64',
   ).toString('ascii');
@@ -54,6 +54,7 @@ export class IngestService {
           }.json`,
         )
         .save(JSON.stringify(position), {
+          resumable: false,
           metadata: {
             contentType: 'application/json',
           },
