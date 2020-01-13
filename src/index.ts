@@ -16,7 +16,7 @@ if (process.env.ENV === 'dev') {
   app.use(Logger());
 }
 app.use(Cors());
-app.use(Body());
+app.use(Body({ multipart: true }));
 app.use(Helmet());
 app.use(errorMiddleware);
 app.use(koa.health());

@@ -49,10 +49,10 @@ paths:
       parameters:
         - in: query
           name: encrypted
-          required: true
+          required: false
           schema:
             type: boolean
-            default: false
+            default: true
           description: |
             This param indicates if the body is encrypted with asymetric encriptation. If it's true, the body must be `EncryptedPositionArray`, if it's false or not informed the body must be `PositionArray`
         - in: query

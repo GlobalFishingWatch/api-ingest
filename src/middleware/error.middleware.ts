@@ -1,4 +1,3 @@
-import { HttpException, UnprocessableEntityException } from 'errors/http.error';
 import * as Koa from 'koa';
 import { logger } from 'logger';
 const { errors } = require('auth-middleware');
@@ -26,10 +25,10 @@ export async function errorMiddleware(
   } catch (err) {
     logger.error('Error ', err);
     if (
-      err instanceof HttpException ||
+      err instanceof errors.HttpException ||
       err instanceof errors.ForbiddenException
     ) {
-      if (err instanceof UnprocessableEntityException) {
+      if (err instanceof errors.UnprocessableEntityException) {
         ctx.status = err.code;
         ctx.body = swaggerError2ValidationError(err.params);
       } else {

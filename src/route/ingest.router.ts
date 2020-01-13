@@ -12,15 +12,14 @@ class UserRouter {
     ctx.body = IngestService.getLastPublicKey();
   }
   static async savePosition(ctx: Koa.ParameterizedContext) {
+    console.log(ctx.request.body);
     let positions = ctx.request.body;
     const app = ctx.state.user;
-    if (ctx.query.encrypted && ctx.query.encrypted === 'true') {
-      console.log('Decrypting', positions);
+    if (!ctx.query.encrypted || ctx.query.encrypted === 'true') {
       positions = await IngestService.decryptPositions(
         ctx.request.body,
         ctx.query['version-key'],
       );
-      console.log(positions);
     }
     await validatePositions(positions);
     await IngestService.uploadPositions(app.id, positions);

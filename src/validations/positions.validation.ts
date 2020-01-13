@@ -1,6 +1,9 @@
-import { UnprocessableEntityException } from 'errors/http.error';
 import * as Koa from 'koa';
 import * as Joi from '@hapi/joi';
+
+const {
+  errors: { UnprocessableEntityException },
+} = require('auth-middleware');
 
 const schema = Joi.array().items(
   Joi.object({
