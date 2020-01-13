@@ -31,7 +31,7 @@ export class IngestService {
       privateKey = config.keys[versionKey].privateKeyDecode;
     }
     const res = body.map(item => {
-      const buffer = Buffer.from(item);
+      const buffer = Buffer.from(item, 'base64');
       const decrypted = crypto.privateDecrypt(privateKey, buffer);
       return JSON.parse(decrypted.toString('utf8'));
     });
