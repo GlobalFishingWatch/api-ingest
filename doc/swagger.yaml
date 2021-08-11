@@ -138,12 +138,12 @@ components:
       type: array
       description: Array of positions
       items:
-        $ref: '#/components/schemas/Position'
-    Position:
+        $ref: '#/components/schemas/PositionIngest'
+    PositionIngest:
       type: object
       description: Position
       required:
-        - vesselId
+        - id
         - lat
         - lon
         - timestamp
