@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tslint --project . && tsc",
     "watch": "nodemon --watch src -e ts,tsx --exec node index.js",
-    "start": "NODE_PATH=./dist node dist/index.js",
+    "start": "NODE_PATH=./dist node --max-http-header-size 20000 dist/index.js",
     "test": "tslint --project ."
   },
   "keywords": [],
