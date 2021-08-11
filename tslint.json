@@ -1,0 +1,8 @@
+{
+  "extends": "tslint-config-airbnb",
+  "experimentalDecorators": true,
+  "rules": {
+    "ter-arrow-parens": [false],
+    "no-increment-decrement": [false]
+  }
+}

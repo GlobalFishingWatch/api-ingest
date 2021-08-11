@@ -1,0 +1,198 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: Ingest API
+  description: |
+    Ingest API
+    ## Authorization
+
+    This API requires an API key to use. The key should be included in the `Authorization` header of all requests to the API. Example: `Authorization: Bearer <token>`
+servers:
+  - url: https://gateway.api.dev.globalfishingwatch.org
+
+paths:
+  '/ingest/public-key':
+    get:
+      tags:
+        - Ingest
+      summary: |
+        Get public key for encryptation
+      description: |
+        Get public key for encryptation
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Expected response to a successful request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKey'
+        '401':
+          description: Unauthorized, either the api key is invalid or expired.
+        '400':
+          description: Bad request. Invalid or wrong parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+  '/ingest/position':
+    post:
+      tags:
+        - Ingest
+      summary: |
+        Save positions.
+      description: |
+        Create new action
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: encrypted
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: |
+            This param indicates if the body is encrypted with asymetric encriptation. If it's true, the body must be `EncryptedPositionArray`, if it's false or not informed the body must be `PositionArray`
+        - in: query
+          name: version-key
+          required: false
+          schema:
+            type: string
+          description: This param indicates the version of the key used to encrypt the body, if the body is encrypted. If the body is encrypted but this param is not informed, the api uses the last version of the key to decrypt the body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PositionArray'
+                - $ref: '#/components/schemas/EncryptedPositionArray'
+
+      responses:
+        '204':
+          description: Expected response to a successful request.
+        '401':
+          description: Unauthorized, either the api key is invalid or expired.
+        '400':
+          description: Bad request. Invalid or wrong parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    ValidationError:
+      type: object
+      required:
+        - fields
+        - general
+      properties:
+        fields:
+          type: array
+          items:
+            type: object
+            required:
+              - field
+              - errors
+            properties:
+              field:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - code
+                    - description
+                  properties:
+                    code:
+                      type: string
+                    description:
+                      type: string
+        general:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: string
+              description:
+                type: string
+    EncryptedPositionArray:
+      type: array
+      description: Array of encrypted positions
+      items:
+        type: string
+    PositionArray:
+      type: array
+      description: Array of positions
+      items:
+        $ref: '#/components/schemas/PositionIngest'
+    PositionIngest:
+      type: object
+      description: Position
+      required:
+        - id
+        - lat
+        - lon
+        - timestamp
+      properties:
+        id:
+          title: Identifier
+          description: |
+            Alphanumeric identifier which uniquely identifies the entity.
+          type: string
+        lat:
+          title: Latitude
+          description: Latitude
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+        lon:
+          title: Longitude
+          description: Longitude
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+        timestamp:
+          title: Timestamp
+          description: |
+            ISO8601 representation of the date and time this position
+            was detected.
+          type: string
+          format: date-time
+        extraInfo:
+          title: Extra Info
+          type: object
+          description: |
+            More info about the vessel
+    PublicKey:
+      type: object
+      description: Public key
+      required:
+        - key
+      properties:
+        key:
+          title: key
+          description: |
+            Content of the key encoded in base64
+          type: string
+        version:
+          title: version
+          description: |
+            Version of the key
+          example: v1
+          type: string

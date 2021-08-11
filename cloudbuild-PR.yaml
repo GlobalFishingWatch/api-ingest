@@ -1,0 +1,20 @@
+steps:
+  # Push production image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '--target',
+        'development',
+        '-t',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        '.',
+      ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'run',
+        'gcr.io/world-fishing-827/github.com/globalfishingwatch/api-ingest:$COMMIT_SHA',
+        'npm',
+        'test',
+      ]

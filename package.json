@@ -1,39 +1,58 @@
 {
   "name": "api-ingest",
   "version": "1.0.0",
-  "description": "REST API backend for ingesting vessel data:",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/api-ingest.git"
-  },
-  "author": "Global Fishing Watch",
-  "bugs": {
-    "url": "https://github.com/GlobalFishingWatch/api-ingest/issues"
-  },
-  "homepage": "https://github.com/GlobalFishingWatch/api-ingest#readme",
-  "engines": {
-    "node": "~8.9"
-  },
-  "main": "src/index.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "per-env",
-    "start:production": "node src/index.js",
-    "start:development": "nodemon --inspect -e json,js,yaml src/index.js"
+    "build": "tslint --project . && tsc",
+    "watch": "nodemon --watch src -e ts,tsx --exec node index.js",
+    "start": "NODE_PATH=./dist node --max-http-header-size 20000 dist/index.js",
+    "test": "tslint --project ."
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "cors": "^2.7.1",
-    "express": "^4.13.4",
-    "express-winston": "^1.4.2",
-    "fs-extra": "^1.0.0",
-    "@google-cloud/datastore": "^1.1.0",
-    "@google-cloud/storage": "^1.2.0",
-    "lodash": "^4.17.2",
-    "nodemon": "^1.9.2",
-    "per-env": "^1.0.2",
-    "swagger-tools": "^0.10.3",
-    "winston": "^2.2.0",
-    "yamljs": "^0.2.9"
+    "@google-cloud/logging-winston": "^3.0.0",
+    "@google-cloud/storage": "^4.1.1",
+    "@hapi/joi": "^16.1.7",
+    "@koa/cors": "^2.2.3",
+    "@types/joi": "^14.3.4",
+    "@types/koa": "^2.0.51",
+    "@types/koa-helmet": "^3.1.2",
+    "@types/koa-json": "^2.0.18",
+    "@types/koa-logger": "^3.1.1",
+    "@types/koa-router": "^7.0.42",
+    "@types/koa__cors": "^2.2.3",
+    "auth-middleware": "git://github.com/GlobalFishingWatch/auth-middleware.git#develop",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-helmet": "^5.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^3.2.1",
+    "koa-router": "^7.4.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
+    "tslint": "^5.20.0",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^3.6.4",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "ts-node": "^8.4.1",
+    "tsconfig-paths": "^3.9.0"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true
+      }
+    ]
   }
 }
