@@ -11,7 +11,7 @@ const schema = Joi.array().items(
       .guid()
       .required(),
     lat: Joi.number()
-      .min(0)
+      .min(-90)
       .max(90)
       .strict()
       .required(),
