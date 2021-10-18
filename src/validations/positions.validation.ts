@@ -8,7 +8,6 @@ const {
 const schema = Joi.array().items(
   Joi.object({
     id: Joi.string()
-      .guid()
       .required(),
     lat: Joi.number()
       .min(-90)
