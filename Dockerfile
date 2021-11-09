@@ -29,7 +29,7 @@ RUN npm run build
 ################################################################################
 FROM build AS development
 RUN apk add --update \
-  python \
+  alpine-sdk \
   curl \
   which \
   bash
