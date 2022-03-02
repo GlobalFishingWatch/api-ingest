@@ -29,7 +29,7 @@ RUN npm run build
 ################################################################################
 FROM build AS development
 RUN apk add --update \
-  python \
+  python3 \
   curl \
   which \
   bash
@@ -45,4 +45,3 @@ COPY index.js /opt/project/
 
 # Setup development dependencies
 RUN npm --unsafe-perm install --only development
-
