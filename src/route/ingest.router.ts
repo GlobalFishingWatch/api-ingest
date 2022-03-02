@@ -12,7 +12,6 @@ class UserRouter {
     ctx.body = IngestService.getLastPublicKey();
   }
   static async savePosition(ctx: Koa.ParameterizedContext) {
-    console.log(ctx.request.body);
     let positions = ctx.request.body;
     const app = ctx.state.user;
     if (!ctx.query.encrypted || ctx.query.encrypted === 'true') {
