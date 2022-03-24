@@ -1,6 +1,6 @@
 openapi: '3.0.0'
 info:
-  version: 1.0.0
+  version: 2.0.0
   title: Ingest API
   description: |
     Ingest API
@@ -11,7 +11,7 @@ servers:
   - url: https://gateway.api.dev.globalfishingwatch.org
 
 paths:
-  '/ingest/public-key':
+  '/v2/ingest/public-key':
     get:
       tags:
         - Ingest
@@ -23,45 +23,17 @@ paths:
         - ApiKeyAuth: []
       responses:
         '200':
-          description: Expected response to a successful request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PublicKey'
+          $ref: '#/components/responses/PublicKeyResponse'
         '401':
-          description: Unauthorized, either the api key is invalid or expired.
-        '400':
-          description: Bad request. Invalid or wrong parameters were provided.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-  '/v1/ingest/public-key':
-    get:
-      tags:
-        - Ingest
-      summary: |
-        Get public key for encryptation
-      description: |
-        Get public key for encryptation
-      security:
-        - ApiKeyAuth: []
-      responses:
-        '200':
-          description: Expected response to a successful request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PublicKey'
-        '401':
-          description: Unauthorized, either the api key is invalid or expired.
-        '400':
-          description: Bad request. Invalid or wrong parameters were provided.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-  '/ingest/position':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenErrorResponse'
+        '412':
+          $ref: '#/components/responses/UnprocessableEntityErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableErrorResponse'
+  
+  '/v2/ingest/positions':
     post:
       tags:
         - Ingest
@@ -99,105 +71,145 @@ paths:
         '204':
           description: Expected response to a successful request.
         '401':
-          description: Unauthorized, either the api key is invalid or expired.
-        '400':
-          description: Bad request. Invalid or wrong parameters were provided.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-  '/v1/ingest/position':
-    post:
-      tags:
-        - Ingest
-      summary: |
-        Save positions.
-      description: |
-        Create new action
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - in: query
-          name: encrypted
-          required: false
-          schema:
-            type: boolean
-            default: true
-          description: |
-            This param indicates if the body is encrypted with asymetric encriptation. If it's true, the body must be `EncryptedPositionArray`, if it's false or not informed the body must be `PositionArray`
-        - in: query
-          name: version-key
-          required: false
-          schema:
-            type: string
-          description: This param indicates the version of the key used to encrypt the body, if the body is encrypted. If the body is encrypted but this param is not informed, the api uses the last version of the key to decrypt the body
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              oneOf:
-                - $ref: '#/components/schemas/PositionArray'
-                - $ref: '#/components/schemas/EncryptedPositionArray'
-
-      responses:
-        '204':
-          description: Expected response to a successful request.
-        '401':
-          description: Unauthorized, either the api key is invalid or expired.
-        '400':
-          description: Bad request. Invalid or wrong parameters were provided.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenErrorResponse'
+        '412':
+          $ref: '#/components/responses/UnprocessableEntityErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableErrorResponse'
+  
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: Authorization
-  schemas:
-    ValidationError:
-      type: object
-      required:
-        - fields
-        - general
-      properties:
-        fields:
-          type: array
-          items:
+
+  responses:
+
+    #-------------------------------
+    # Reusable Errors Responses
+    #-------------------------------
+
+    NotContentResponse:
+      description: No Content.
+      content:
+        application/json:
+          schema:
             type: object
-            required:
-              - field
-              - errors
+
+    UnauthorizedErrorResponse:
+      description: No Unauthorized.
+      content:
+        application/json:
+          schema:
+            type: object
             properties:
-              field:
+              statusCode:
+                type: number
+                example: 401
+              error:
                 type: string
-              errors:
+                example: Unauthorized
+              messages:
                 type: array
                 items:
-                  type: object
-                  required:
-                    - code
-                    - description
-                  properties:
-                    code:
-                      type: string
-                    description:
-                      type: string
-        general:
-          type: array
-          items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    ForbiddenErrorResponse:
+      description: You do not have permissions to do the action.
+      content:
+        application/json:
+          schema:
             type: object
-            required:
-              - code
-              - description
             properties:
-              code:
+              statusCode:
+                type: number
+                example: 403
+              error:
                 type: string
-              description:
+                example: Forbidden
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    NotFoundErrorResponse:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 404
+              error:
                 type: string
+                example: NotFound
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    UnprocessableEntityErrorResponse:
+      description: Unprocessable Entity. Validation error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 412
+              error:
+                type: string
+                example: UnprocessableEntity
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    ServiceUnavailableErrorResponse:
+      description: Service Unavailable.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 503
+              error:
+                type: string
+                example: Service Unavailable
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+
+    #-------------------------------
+    # Not reusable schemas
+    #-------------------------------
+    PublicKeyResponse:
+      description: Public key rsponse
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicKeyResponse'
+    
+   
+   
+  schemas:
+    ErrorDetails:
+      type: object
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
     EncryptedPositionArray:
       type: array
       description: Array of encrypted positions
@@ -248,7 +260,7 @@ components:
           type: object
           description: |
             More info about the vessel
-    PublicKey:
+    PublicKeyResponse:
       type: object
       description: Public key
       required:
