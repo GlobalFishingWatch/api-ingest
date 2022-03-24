@@ -52,8 +52,8 @@ steps:
         '--platform',
         'managed',
         '--set-env-vars',
-        'UPLOAD_BUCKET=$_UPLOAD_BUCKET,UPLOAD_DIR=$_UPLOAD_DIR,GFW_APP_TOKEN=$_GFW_APP_TOKEN,UPLOAD_PROJECT=$_UPLOAD_PROJECT',
-        '--set-secrets=PRIVATE_KEY=$_PRIVATE_KEY,PUBLIC_KEY=$_PUBLIC_KEY',
+        'UPLOAD_BUCKET=$_UPLOAD_BUCKET,UPLOAD_DIR=$_UPLOAD_DIR,UPLOAD_PROJECT=$_UPLOAD_PROJECT',
+        '--set-secrets=PRIVATE_KEY=$_PRIVATE_KEY,PUBLIC_KEY=$_PUBLIC_KEY,GFW_APP_TOKEN=$_GFW_APP_TOKEN',
         '--allow-unauthenticated',
       ]
 images:
