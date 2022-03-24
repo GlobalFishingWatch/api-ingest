@@ -17,7 +17,7 @@ class IngestV1Router {
     if (!ctx.query.encrypted || ctx.query.encrypted === 'true') {
       positions = await IngestService.decryptPositions(
         ctx.request.body,
-        ctx.query['version-key'],
+        ctx.query['version-key'] as string,
       );
     }
     await validatePositions(positions);
