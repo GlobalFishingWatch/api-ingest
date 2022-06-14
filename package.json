@@ -13,18 +13,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/logging-winston": "^3.0.0",
-    "@google-cloud/storage": "^4.1.1",
+    "@google-cloud/logging-winston": "^4.2.2",
+    "@google-cloud/storage": "^5.18.2",
     "@hapi/joi": "^16.1.7",
     "@koa/cors": "^2.2.3",
     "@types/joi": "^14.3.4",
     "@types/koa": "^2.0.51",
+    "@types/koa__cors": "^2.2.3",
     "@types/koa-helmet": "^3.1.2",
     "@types/koa-json": "^2.0.18",
     "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.0.42",
-    "@types/koa__cors": "^2.2.3",
-    "auth-middleware": "git://github.com/GlobalFishingWatch/auth-middleware.git#develop",
+    "auth-middleware": "https://github.com/GlobalFishingWatch/auth-middleware.git#develop",
     "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-helmet": "^5.2.0",
@@ -39,7 +39,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.15",
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0"
   },

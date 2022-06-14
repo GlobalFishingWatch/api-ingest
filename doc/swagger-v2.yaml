@@ -1,0 +1,279 @@
+openapi: '3.0.0'
+info:
+  version: 2.0.0
+  title: Ingest API
+  description: |
+    Ingest API
+    ## Authorization
+
+    This API requires an API key to use. The key should be included in the `Authorization` header of all requests to the API. Example: `Authorization: Bearer <token>`
+servers:
+  - url: https://gateway.api.dev.globalfishingwatch.org
+
+paths:
+  '/v2/ingest/public-key':
+    get:
+      tags:
+        - Ingest
+      summary: |
+        Get public key for encryptation
+      description: |
+        Get public key for encryptation
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/PublicKeyResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenErrorResponse'
+        '412':
+          $ref: '#/components/responses/UnprocessableEntityErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableErrorResponse'
+  
+  '/v2/ingest/positions':
+    post:
+      tags:
+        - Ingest
+      summary: |
+        Save positions.
+      description: |
+        Create new action
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: encrypted
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: |
+            This param indicates if the body is encrypted with asymetric encriptation. If it's true, the body must be `EncryptedPositionArray`, if it's false or not informed the body must be `PositionArray`
+        - in: query
+          name: version-key
+          required: false
+          schema:
+            type: string
+          description: This param indicates the version of the key used to encrypt the body, if the body is encrypted. If the body is encrypted but this param is not informed, the api uses the last version of the key to decrypt the body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PositionArray'
+                - $ref: '#/components/schemas/EncryptedPositionArray'
+
+      responses:
+        '204':
+          description: Expected response to a successful request.
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenErrorResponse'
+        '412':
+          $ref: '#/components/responses/UnprocessableEntityErrorResponse'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailableErrorResponse'
+  
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  responses:
+
+    #-------------------------------
+    # Reusable Errors Responses
+    #-------------------------------
+
+    NotContentResponse:
+      description: No Content.
+      content:
+        application/json:
+          schema:
+            type: object
+
+    UnauthorizedErrorResponse:
+      description: No Unauthorized.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 401
+              error:
+                type: string
+                example: Unauthorized
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    ForbiddenErrorResponse:
+      description: You do not have permissions to do the action.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 403
+              error:
+                type: string
+                example: Forbidden
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    NotFoundErrorResponse:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 404
+              error:
+                type: string
+                example: NotFound
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    UnprocessableEntityErrorResponse:
+      description: Unprocessable Entity. Validation error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 412
+              error:
+                type: string
+                example: UnprocessableEntity
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+    ServiceUnavailableErrorResponse:
+      description: Service Unavailable.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: number
+                example: 503
+              error:
+                type: string
+                example: Service Unavailable
+              messages:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetails'
+
+
+    #-------------------------------
+    # Not reusable schemas
+    #-------------------------------
+    PublicKeyResponse:
+      description: Public key rsponse
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicKeyResponse'
+    
+   
+   
+  schemas:
+    ErrorDetails:
+      type: object
+      properties:
+        title:
+          type: string
+        detail:
+          type: string
+    EncryptedPositionArray:
+      type: array
+      description: Array of encrypted positions
+      items:
+        type: string
+    PositionArray:
+      type: array
+      description: Array of positions
+      items:
+        $ref: '#/components/schemas/PositionIngest'
+    PositionIngest:
+      type: object
+      description: Position
+      required:
+        - id
+        - lat
+        - lon
+        - timestamp
+      properties:
+        id:
+          title: Identifier
+          description: |
+            Alphanumeric identifier which uniquely identifies the entity.
+          type: string
+        lat:
+          title: Latitude
+          description: Latitude
+          type: number
+          format: float
+          minimum: -90
+          maximum: 90
+        lon:
+          title: Longitude
+          description: Longitude
+          type: number
+          format: float
+          minimum: -180
+          maximum: 180
+        timestamp:
+          title: Timestamp
+          description: |
+            ISO8601 representation of the date and time this position
+            was detected.
+          type: string
+          format: date-time
+        extraInfo:
+          title: Extra Info
+          type: object
+          description: |
+            More info about the vessel
+    PublicKeyResponse:
+      type: object
+      description: Public key
+      required:
+        - key
+      properties:
+        key:
+          title: key
+          description: |
+            Content of the key encoded in base64
+          type: string
+        version:
+          title: version
+          description: |
+            Version of the key
+          example: v1
+          type: string

@@ -18,8 +18,7 @@ export const config = sanitizeEnvironment(environments, {
   log: {
     level: entry({
       key: 'LOG_LEVEL',
-      doc:
-        'Logging level. In increasing amount of logs: error, warn, info, verbose, debug, silly',
+      doc: 'Logging level. In increasing amount of logs: error, warn, info, verbose, debug, silly',
       defaults: { all: 'debug' },
       required: true,
     }),
@@ -47,6 +46,12 @@ export const config = sanitizeEnvironment(environments, {
       key: 'UPLOAD_DIR',
       doc: 'Dir of the bucket to upload the files',
       defaults: { all: 'v1' },
+      required: true,
+    }),
+    project: entry({
+      key: 'UPLOAD_PROJECT',
+      doc: 'Project to upload the files',
+      defaults: { all: '' },
       required: true,
     }),
   },
