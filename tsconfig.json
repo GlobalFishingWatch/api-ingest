@@ -13,6 +13,7 @@
     "outDir": "./dist",
     "lib": ["es6"],
     "baseUrl": "src/",
+    "skipLibCheck": true,
     "paths": {
 
     }
