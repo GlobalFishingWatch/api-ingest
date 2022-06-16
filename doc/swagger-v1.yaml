@@ -36,6 +36,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+  '/v1/ingest/public-key':
+    get:
+      tags:
+        - Ingest
+      summary: |
+        Get public key for encryptation
+      description: |
+        Get public key for encryptation
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Expected response to a successful request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKey'
+        '401':
+          description: Unauthorized, either the api key is invalid or expired.
+        '400':
+          description: Bad request. Invalid or wrong parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/ingest/position':
     post:
       tags:
@@ -43,7 +68,7 @@ paths:
       summary: |
         Save positions.
       description: |
-        Create new action
+        Save new positions
       security:
         - ApiKeyAuth: []
       parameters:
@@ -81,7 +106,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+  '/v1/ingest/position':
+    post:
+      tags:
+        - Ingest
+      summary: |
+        Save positions.
+      description: |
+        Save new positions
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - in: query
+          name: encrypted
+          required: false
+          schema:
+            type: boolean
+            default: true
+          description: |
+            This param indicates if the body is encrypted with asymetric encriptation. If it's true, the body must be `EncryptedPositionArray`, if it's false or not informed the body must be `PositionArray`
+        - in: query
+          name: version-key
+          required: false
+          schema:
+            type: string
+          description: This param indicates the version of the key used to encrypt the body, if the body is encrypted. If the body is encrypted but this param is not informed, the api uses the last version of the key to decrypt the body
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/PositionArray'
+                - $ref: '#/components/schemas/EncryptedPositionArray'
 
+      responses:
+        '204':
+          description: Expected response to a successful request.
+        '401':
+          description: Unauthorized, either the api key is invalid or expired.
+        '400':
+          description: Bad request. Invalid or wrong parameters were provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
 components:
   securitySchemes:
     ApiKeyAuth:

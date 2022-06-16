@@ -1,12 +1,12 @@
-import { IngestService } from './../service/ingest.service';
 import { logger } from 'logger';
 import * as Router from 'koa-router';
 import * as Koa from 'koa';
+import { IngestService } from 'service/ingest.service';
 import { validatePositions } from 'validations/positions.validation';
 
 const { koa } = require('auth-middleware');
 
-class UserRouter {
+class IngestV2Router {
   static async getPublicKey(ctx: Koa.ParameterizedContext) {
     logger.debug('Getting public key');
     ctx.body = IngestService.getLastPublicKey();
@@ -27,20 +27,20 @@ class UserRouter {
 }
 
 const router = new Router({
-  prefix: '/ingest',
+  prefix: '/v2/ingest',
 });
 
 router.get(
   '/public-key',
   koa.obtainUser(true),
   koa.checkPermissions([{ action: 'read', type: 'entity', value: 'ingest' }]),
-  UserRouter.getPublicKey,
+  IngestV2Router.getPublicKey,
 );
 
 router.post(
-  '/position',
+  '/positions',
   koa.obtainUser(true),
   koa.checkPermissions([{ action: 'create', type: 'entity', value: 'ingest' }]),
-  UserRouter.savePosition,
+  IngestV2Router.savePosition,
 );
 export default router;

@@ -3,7 +3,7 @@ import * as crypto from 'crypto';
 import { logger } from 'logger';
 import { Storage } from '@google-cloud/storage';
 
-Object.keys(config.keys).forEach(version => {
+Object.keys(config.keys).forEach((version) => {
   config.keys[version].publicKeyDecode = Buffer.from(
     config.keys[version].publicKey,
     'base64',
@@ -30,7 +30,7 @@ export class IngestService {
     if (config.keys[versionKey]) {
       privateKey = config.keys[versionKey].privateKeyDecode;
     }
-    const res = body.map(item => {
+    const res = body.map((item) => {
       const buffer = Buffer.from(item, 'base64');
       const decrypted = crypto.privateDecrypt(privateKey, buffer);
       return JSON.parse(decrypted.toString('utf8'));
@@ -42,7 +42,7 @@ export class IngestService {
   static async uploadPositions(appId: number, positions: any[]): Promise<void> {
     logger.debug(`Uploading files to gcs (bucket: ${config.upload.bucket})`);
 
-    const storage = new Storage();
+    const storage = new Storage({ projectId: config.upload.project });
     const bucket = storage.bucket(config.upload.bucket);
     for (let i = 0; i < positions.length; i++) {
       const position = positions[i];
