@@ -25,6 +25,11 @@ module "develop" {
     "UPLOAD_DIR=received",
     "UPLOAD_PROJECT=gfw-ingestion",
   ]
+  set_secrets = [
+    "PRIVATE_KEY=projects/706952489382/secrets/INGEST_PRIVATE_KEY",
+    "PUBLIC_KEY=projects/706952489382/secrets/INGEST_PUBLIC_KEY",
+    "GFW_APP_TOKEN=projects/706952489382/secrets/GFW_APP_TOKEN_DEV",
+  ]
 }
 
 
@@ -49,5 +54,10 @@ module "staging" {
     "UPLOAD_BUCKET=gfw-api-ingest-sta-us-central1",
     "UPLOAD_DIR=received",
     "UPLOAD_PROJECT=gfw-ingestion",
+  ]
+  set_secrets = [
+    "PRIVATE_KEY=projects/706952489382/secrets/INGEST_PRIVATE_KEY",
+    "PUBLIC_KEY=projects/706952489382/secrets/INGEST_PUBLIC_KEY",
+    "GFW_APP_TOKEN=projects/706952489382/secrets/GFW_APP_TOKEN_STA",
   ]
 }
