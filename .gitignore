@@ -5,3 +5,8 @@ dist/
 jwks.json
 dev/
 .DS_Store
+
+# terraform
+.terraform/
+.terraform*
+.auto.tfvars
