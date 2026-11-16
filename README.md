@@ -1,5 +1,8 @@
 # GFW Ingest API
 
+> **Moved.** This service now lives in the monorepo [GlobalFishingWatch/api-monorepo-node](https://github.com/GlobalFishingWatch/api-monorepo-node) under `apps/api-ingest`. Development, builds and deploys happen there; this repository is archived and kept for history only.
+
+
 This is a [nodejs](https://nodejs.org/en/) koa application.
 
 ## Configuration
